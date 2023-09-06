@@ -24,9 +24,32 @@ class Solution {
     public int coinChange(int[] coins, int amount) {
         int n = coins.length;
 
-        long[][] dp = new long[n][amount+1];
+        long[][] dp = new long[n+1][amount+1];
 
-        long ans = solve(coins, amount, 0, dp);
+        for(int i=0;i<=amount;i++){
+            dp[0][i] = Integer.MAX_VALUE;
+        }
+
+        for(int i=0;i<n;i++){
+            dp[i][0] = 0;
+        }
+
+
+        for(int i=1;i<=n;i++){
+            for(int j=1;j<=amount;j++){
+                if(coins[i-1] <= j){
+                    dp[i][j] = Math.min(
+                        1 + dp[i][j - coins[i-1]],
+                        dp[i-1][j]
+                    );
+                }
+                else{
+                    dp[i][j] = dp[i-1][j];
+                }
+            }
+        }
+        long ans = dp[n][amount];
+        //long ans = solve(coins, amount, 0, dp);
 
         if(ans >= Integer.MAX_VALUE) return -1;
 
