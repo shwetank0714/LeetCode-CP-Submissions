@@ -34,7 +34,7 @@ class Solution {
             dp[i][0] = 0;
         }
 
-
+        // Bottom Up
         for(int i=1;i<=n;i++){
             for(int j=1;j<=amount;j++){
                 if(coins[i-1] <= j){
@@ -48,7 +48,35 @@ class Solution {
                 }
             }
         }
-        long ans = dp[n][amount];
+
+
+        // Space Optimized
+        long[] store = new long[amount+1];
+        long[] curr = new long[amount+1];
+
+        for(int i=0;i<=amount;i++){
+            store[i] = Integer.MAX_VALUE;
+        }
+
+        store[0] = 0; 
+        for(int i=1;i<=n;i++){
+            curr[0] = 0;
+            for(int j=1;j<=amount;j++){
+                if(j >= coins[i-1]){
+                    curr[j] = Math.min(
+                        1 + curr[j - coins[i-1]],
+                        store[j]
+                        );
+                }
+                else{
+                    curr[j] = store[j];
+                }
+            }
+            store = curr;
+        }
+
+
+        long ans = store[amount];
         //long ans = solve(coins, amount, 0, dp);
 
         if(ans >= Integer.MAX_VALUE) return -1;
